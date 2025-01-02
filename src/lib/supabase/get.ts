@@ -6,6 +6,7 @@ export type GET_PARAMS = {
   start?: number;
   end?: number;
   order?: `${string} asc` | `${string} desc`;
+  id?: string;
 };
 
 export const get = async (model: string, params: GET_PARAMS) => {
@@ -69,4 +70,8 @@ export const get = async (model: string, params: GET_PARAMS) => {
 export const get_only_user = (model: string, params: GET_PARAMS) => {
   // TODO : user 확인 로직 추가
   return get(model, params);
+};
+
+export const get_one = (model: string, id: string, params: GET_PARAMS) => {
+  return get(model, _.merge(params, { limit: 1, id }));
 };
