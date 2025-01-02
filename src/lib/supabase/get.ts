@@ -6,7 +6,7 @@ export type GET_PARAMS = {
   start?: number;
   end?: number;
   order?: `${string} asc` | `${string} desc`;
-  id?: string;
+  id?: number;
 };
 
 export const get = async (model: string, params: GET_PARAMS) => {
@@ -77,6 +77,6 @@ export const get_only_user = (model: string, params: GET_PARAMS) => {
   return get(model, params);
 };
 
-export const get_one = (model: string, id: string, params: GET_PARAMS) => {
+export const get_one = (model: string, id: number, params: GET_PARAMS) => {
   return get(model, _.merge(params, { limit: 1, id }));
 };
