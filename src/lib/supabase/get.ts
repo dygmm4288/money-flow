@@ -64,7 +64,12 @@ export const get = async (model: string, params: GET_PARAMS) => {
     query.eq(key, value);
   });
 
-  return query.then();
+  try {
+    const data = await query.then();
+    return data;
+  } catch (err) {
+    throw err;
+  }
 };
 
 export const get_only_user = (model: string, params: GET_PARAMS) => {
