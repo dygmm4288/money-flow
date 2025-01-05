@@ -1,6 +1,7 @@
 import _ from "lodash";
 import { ModelSchema } from "./models.types";
 import { createClient } from "./server";
+import { Database } from "./supabase.types";
 
 export type GET_PARAMS = {
   limit?: number;
@@ -10,12 +11,16 @@ export type GET_PARAMS = {
   id?: number;
 };
 
-export const get = async (model: ModelSchema, params: GET_PARAMS) => {
+export const get = async <T extends ModelSchema>(
+  model: T,
+  params?: GET_PARAMS,
+): Promise<Database["public"]["Tables"][T]["Row"][] | null> => {
   const db = await createClient();
 
   const query = db.from(model).select();
 
   // 최소 값 설정
+  if (!params) params = {};
   if (!params.limit) params.limit = 10;
   if (!params.start) params.start = 0;
 
@@ -71,7 +76,7 @@ export const get = async (model: ModelSchema, params: GET_PARAMS) => {
   });
 
   try {
-    const data = await query.then();
+    const { data } = await query.then();
     return data;
   } catch (err) {
     throw err;
