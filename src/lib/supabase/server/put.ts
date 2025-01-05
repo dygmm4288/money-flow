@@ -8,7 +8,11 @@ export const put = async <T extends ModelSchema>(
 ) => {
   const db = await createClient();
 
-  const { data, error } = await db.from(model).update(params);
+  const { data, error } = await db
+    .from(model)
+    .update(params)
+    .eq("id", id)
+    .select();
   if (error) throw error;
 
   return data;
