@@ -1,4 +1,4 @@
-import { ModelSchema, UpdateSchema } from "../models.types";
+import { ModelSchema, UpdateSchema } from "../../types/models.types";
 import { createClient } from "../server";
 
 export const put = async <T extends ModelSchema>(
