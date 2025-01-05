@@ -15,6 +15,10 @@ export const get = async (model: ModelSchema, params: GET_PARAMS) => {
 
   const query = db.from(model).select();
 
+  // 최소 값 설정
+  if (!params.limit) params.limit = 10;
+  if (!params.start) params.start = 0;
+
   _.forEach(params, (value, key) => {
     if (!value || key === "end") return;
 
