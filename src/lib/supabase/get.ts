@@ -34,32 +34,33 @@ export const get = async (model: ModelSchema, params: GET_PARAMS) => {
     if (key.includes("_contains")) {
     }
 
-    if (_.includes(["asc", "desc"], key) && typeof value === "string") {
-      const [column, asc] = _.split(value, " ");
-
-      query.order(column, { ascending: asc === "asc" });
+    if (key === "order") {
+      const [column, direction] = (value as string).split(" ");
+      const ascending = direction?.toLowerCase() !== "desc";
+      // column과 ascending 제대로 설정했는지 확인
+      query.order(column, { ascending });
       return;
     }
 
-    if (key.includes("_lt") && typeof value === "string") {
-      const [column] = _.split(value, "_lt");
-
-      if (key.includes("_lte")) {
-        query.lte(model, column);
-        return;
-      }
-
-      query.lt(model, column);
+    if (key.endsWith("_lt")) {
+      const column = key.replace("_lt", "");
+      query.lt(column, value);
+      return;
     }
-    if (key.includes("_gt") && typeof value === "string") {
-      const [column] = _.split(value, "_lt");
-
-      if (key.includes("_gte")) {
-        query.gte(model, column);
-        return;
-      }
-
-      query.gt(model, column);
+    if (key.endsWith("_lte")) {
+      const column = key.replace("_lte", "");
+      query.lte(column, value);
+      return;
+    }
+    if (key.endsWith("_gt")) {
+      const column = key.replace("_gt", "");
+      query.gt(column, value);
+      return;
+    }
+    if (key.endsWith("_gte")) {
+      const column = key.replace("_gte", "");
+      query.gte(column, value);
+      return;
     }
 
     query.eq(key, value);
