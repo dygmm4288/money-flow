@@ -1,11 +1,10 @@
-import { ModelSchema } from "./models.types";
-import { createClient } from "./server";
-import { Database } from "./supabase.types";
+import { ModelSchema, UpdateSchema } from "../models.types";
+import { createClient } from "../server";
 
 export const put = async <T extends ModelSchema>(
   model: T,
   id: number,
-  params: Database["public"]["Tables"][T]["Update"],
+  params: UpdateSchema<T>,
 ) => {
   const db = await createClient();
 

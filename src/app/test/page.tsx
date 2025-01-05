@@ -1,5 +1,6 @@
-import { get } from "@/lib/supabase/get";
+import { get } from "@/lib/supabase/server/get";
 import _ from "lodash";
+import PostBtn from "./PostBtn";
 
 export default async function TestPage() {
   const data = await get("pay");
@@ -14,6 +15,7 @@ export default async function TestPage() {
           </div>
         )),
       )}
+      <PostBtn />
     </div>
   );
 }
