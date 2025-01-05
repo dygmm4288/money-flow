@@ -1,10 +1,16 @@
+import { ModelSchema } from "./models.types";
 import { createClient } from "./server";
+import { Database } from "./supabase.types";
 
-export type PUT_PARAMS = {};
-
-export const put = async (model: string, id: number, params: PUT_PARAMS) => {
+export const put = async <T extends ModelSchema>(
+  model: T,
+  id: number,
+  params: Database["public"]["Tables"][T]["Update"],
+) => {
   const db = await createClient();
 
-  // TODO: UPDATE LOGIC
-  await db.from(model);
+  const { data, error } = await db.from(model).update(params);
+  if (error) throw error;
+
+  return data;
 };
