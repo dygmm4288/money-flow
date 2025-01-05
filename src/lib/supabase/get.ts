@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { ModelSchema } from "./models.types";
 import { createClient } from "./server";
 
 export type GET_PARAMS = {
@@ -9,7 +10,7 @@ export type GET_PARAMS = {
   id?: number;
 };
 
-export const get = async (model: string, params: GET_PARAMS) => {
+export const get = async (model: ModelSchema, params: GET_PARAMS) => {
   const db = await createClient();
 
   const query = db.from(model).select();
@@ -72,11 +73,11 @@ export const get = async (model: string, params: GET_PARAMS) => {
   }
 };
 
-export const get_only_user = (model: string, params: GET_PARAMS) => {
+export const get_only_user = (model: ModelSchema, params: GET_PARAMS) => {
   // TODO : user 확인 로직 추가
   return get(model, params);
 };
 
-export const get_one = (model: string, id: number, params: GET_PARAMS) => {
+export const get_one = (model: ModelSchema, id: number, params: GET_PARAMS) => {
   return get(model, _.merge(params, { limit: 1, id }));
 };
