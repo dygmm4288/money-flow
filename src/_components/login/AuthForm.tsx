@@ -2,7 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import _ from "lodash";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 /**
  * 1) 각 필드 구조를 나타내는 타입
  */
@@ -64,19 +64,32 @@ export default function AuthForm({ type }: Props) {
       },
   );
 
+  const handleChangeValue =
+    (type: keyof AuthDataOmitted) => (e: ChangeEvent<HTMLInputElement>) => {
+      setFormData((prev) => ({ ...prev, [type]: e.target.value }));
+    };
+
+  const handleAuth = () => {
+    if (type === "signin") {
+    } else if (type === "signup") {
+    }
+  };
+
   return (
-    <form>
+    <form className='flex flex-col gap-5' onSubmit={handleAuth}>
       {_.map(authData, (value, key) => (
         <div key={key} className='grid w-full max-w-sm items-center gap-1.5'>
-          <Label htmlFor={key}></Label>
+          <Label htmlFor={key}>{value?.label}</Label>
           <Input
             type={value?.type}
             id={key}
             placeholder={value?.placeholder}
             value={formData[key as keyof AuthDataOmitted]}
+            onChange={handleChangeValue(key as keyof AuthDataOmitted)}
           />
         </div>
       ))}
+      <button></button>
     </form>
   );
 }

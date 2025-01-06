@@ -9,7 +9,7 @@ import AuthForm from "./AuthForm";
 
 export default function SignIn() {
   return (
-    <Card>
+    <Card className='flex flex-col space-y-5'>
       <CardHeader>
         <CardTitle>로그인</CardTitle>
         <CardDescription>
