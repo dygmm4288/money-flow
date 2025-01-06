@@ -21,19 +21,5 @@ import Expense from "./expense/page";
 import Income from "./income/page";
 
 export default function Page() {
-  const pathName = usePathname();
-
-  const renderPage = (pathName: string) => {
-    switch (pathName) {
-      case "/dashboard":
-        return <div>dashBoard</div>;
-      case "/dashboard/income":
-        return <Income />;
-      case "/dashboard/expense":
-        return <Expense />;
-      case "/dashboard/history":
-        return <History />;
-    }
-  };
   return <main className="px-4 py-4">dashboard Page</main>;
 }
