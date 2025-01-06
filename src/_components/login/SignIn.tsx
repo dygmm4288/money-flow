@@ -6,12 +6,18 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import _ from "lodash";
+import Logo from "../common/Logo";
 import AuthForm from "./AuthForm";
 import SocialBtn from "./SocialBtn";
 
 export default function SignIn() {
   return (
-    <Card className='flex flex-col space-y-5 w-1/2'>
+    <Card className='flex flex-col w-1/2'>
+      <div className='flex justify-center items-center my-6 gap-3'>
+        <Logo width={36} height={36} />
+        <h1 className='text-2xl'>{_.upperCase("money-flow")}</h1>
+      </div>
       <CardHeader>
         <CardTitle>로그인</CardTitle>
         <CardDescription>
