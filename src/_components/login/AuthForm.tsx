@@ -1,8 +1,12 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { signInHandler } from "@/lib/supabase/client/auth";
+import { AuthApiError } from "@supabase/supabase-js";
 import _ from "lodash";
-import { ChangeEvent, useState } from "react";
+import { MailOpen } from "lucide-react";
+import { ChangeEvent, FormEvent, LegacyRef, useRef, useState } from "react";
 /**
  * 1) 각 필드 구조를 나타내는 타입
  */
@@ -43,6 +47,9 @@ const auth: AuthDataType = {
   },
 };
 
+type AuthDataPartial = Partial<AuthDataType>;
+type AuthDataObject = { [K in keyof AuthDataPartial]: string };
+
 type Props = {
   type: "signin" | "signup";
 };
@@ -52,25 +59,38 @@ const omitted = (type: "signin" | "signup") =>
 
 export default function AuthForm({ type }: Props) {
   const authData = _.omit(auth, omitted(type));
-  type AuthDataOmitted = Omit<AuthDataType, ReturnType<typeof omitted>[number]>;
 
   // formData의 타입은, 남아 있는 키들만 string으로 매핑
-  const [formData, setFormData] = useState<{
-    [K in keyof AuthDataOmitted]: string;
-  }>(
-    () =>
-      _.mapValues(authData, _.constant("")) as {
-        [K in keyof AuthDataOmitted]: string;
-      },
+  const [formData, setFormData] = useState<AuthDataObject>(
+    _.mapValues(authData, _.constant("")),
   );
+  const emailRef = useRef<HTMLInputElement | null>(null);
+
+  const [error, setError] = useState("");
 
   const handleChangeValue =
-    (type: keyof AuthDataOmitted) => (e: ChangeEvent<HTMLInputElement>) => {
+    (type: keyof AuthDataPartial) => (e: ChangeEvent<HTMLInputElement>) => {
+      if (error) setError("");
       setFormData((prev) => ({ ...prev, [type]: e.target.value }));
     };
 
-  const handleAuth = () => {
+  const handleAuth = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     if (type === "signin") {
+      signInHandler({
+        email: formData.email,
+        password: formData.password,
+        platform: "email",
+      }).catch((err: AuthApiError) => {
+        console.log(err.message);
+        setFormData({ email: "", password: "" });
+        if (err.message === "Invalid login credentials") {
+          setError("올바르지 않은 정보입니다");
+        }
+
+        if (emailRef.current) emailRef.current.focus();
+      });
     } else if (type === "signup") {
     }
   };
@@ -78,18 +98,26 @@ export default function AuthForm({ type }: Props) {
   return (
     <form className='flex flex-col gap-5' onSubmit={handleAuth}>
       {_.map(authData, (value, key) => (
-        <div key={key} className='grid w-full max-w-sm items-center gap-1.5'>
+        <div key={key} className='grid w-full items-center gap-1.5'>
           <Label htmlFor={key}>{value?.label}</Label>
           <Input
+            ref={
+              key === "email"
+                ? (emailRef as LegacyRef<HTMLInputElement>)
+                : undefined
+            }
             type={value?.type}
             id={key}
             placeholder={value?.placeholder}
-            value={formData[key as keyof AuthDataOmitted]}
-            onChange={handleChangeValue(key as keyof AuthDataOmitted)}
+            value={formData[key as keyof AuthDataPartial]}
+            onChange={handleChangeValue(key as keyof AuthDataPartial)}
           />
         </div>
       ))}
-      <button></button>
+      <p className='text-rose-500 text-sm'>{error}</p>
+      <Button type='submit'>
+        <MailOpen /> 이메일로 로그인하기
+      </Button>
     </form>
   );
 }
