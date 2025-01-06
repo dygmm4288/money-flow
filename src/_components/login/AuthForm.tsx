@@ -96,7 +96,11 @@ export default function AuthForm({ type }: Props) {
   };
 
   return (
-    <form className='flex flex-col gap-5' onSubmit={handleAuth}>
+    <form
+      className={
+        !error ? "flex flex-col gap-5" : "flex flex-col gap-5 animate-wiggle"
+      }
+      onSubmit={handleAuth}>
       {_.map(authData, (value, key) => (
         <div key={key} className='grid w-full items-center gap-1.5'>
           <Label htmlFor={key}>{value?.label}</Label>
