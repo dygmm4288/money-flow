@@ -2,6 +2,7 @@
 
 import { ChevronRight, type LucideIcon } from "lucide-react";
 
+import Logo from "@/_components/common/Logo";
 import {
   Collapsible,
   CollapsibleContent,
@@ -17,7 +18,6 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import Image from "next/image";
 
 export function NavMain({
   items,
@@ -36,7 +36,7 @@ export function NavMain({
   return (
     <SidebarGroup>
       <SidebarGroupLabel className='flex flex-row gap-3'>
-        <Image alt='money flow logo' src='/logo.svg' width={24} height={24} />
+        <Logo />
         <span>Money-Flow</span>
       </SidebarGroupLabel>
       <SidebarMenu>
