@@ -2,10 +2,14 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signInHandler } from "@/lib/supabase/client/auth";
+import { useToast } from "@/hooks/use-toast";
+import { signInHandler, signUpHandler } from "@/lib/supabase/client/auth";
+import { checkInvalidSignUp } from "@/lib/utils/auth";
+import { ToastAction } from "@radix-ui/react-toast";
 import { AuthApiError } from "@supabase/supabase-js";
 import _ from "lodash";
 import { MailOpen } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, LegacyRef, useRef, useState } from "react";
 /**
  * 1) 각 필드 구조를 나타내는 타입
@@ -59,12 +63,12 @@ const omitted = (type: "signin" | "signup") =>
 
 export default function AuthForm({ type }: Props) {
   const authData = _.omit(auth, omitted(type));
-
-  // formData의 타입은, 남아 있는 키들만 string으로 매핑
   const [formData, setFormData] = useState<AuthDataObject>(
     _.mapValues(authData, _.constant("")),
   );
   const emailRef = useRef<HTMLInputElement | null>(null);
+  const router = useRouter();
+  const { toast } = useToast();
 
   const [error, setError] = useState("");
 
@@ -74,6 +78,20 @@ export default function AuthForm({ type }: Props) {
       setFormData((prev) => ({ ...prev, [type]: e.target.value }));
     };
 
+  const handleError = (err: AuthApiError) => {
+    console.log(err.message);
+    setFormData({ email: "", password: "", passwordConfirm: "" });
+    if (err.message === "Invalid login credentials") {
+      setError("올바르지 않은 정보입니다");
+    }
+
+    if (err.code === "email_address_invalid") {
+      setError("이메일 주소가 올바르지 않습니다.");
+    }
+
+    if (emailRef.current) emailRef.current.focus();
+  };
+
   const handleAuth = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -82,18 +100,32 @@ export default function AuthForm({ type }: Props) {
         email: formData.email,
         password: formData.password,
         platform: "email",
-      }).catch((err: AuthApiError) => {
-        console.log(err.message);
-        setFormData({ email: "", password: "" });
-        if (err.message === "Invalid login credentials") {
-          setError("올바르지 않은 정보입니다");
-        }
-
-        if (emailRef.current) emailRef.current.focus();
-      });
+      }).catch(handleError);
     } else if (type === "signup") {
+      const { email, password, passwordConfirm } = formData;
+
+      const error = checkInvalidSignUp(email, password, passwordConfirm);
+
+      if (error) {
+        setError(error);
+        return;
+      }
+
+      signUpHandler({ email: email!, password: password! })
+        .then(() => {
+          toast({
+            title: "등록 성공",
+            description: "회원가입한 이메일에서 승인을 완료해주세요",
+            action: <ToastAction altText='yes'>예</ToastAction>,
+          });
+          router.push("/login?type=signin");
+        })
+        .catch(handleError);
     }
   };
+
+  const btnLabel =
+    type === "signin" ? "이메일로 로그인하기" : "이메일로 회원가입";
 
   return (
     <form
@@ -120,7 +152,7 @@ export default function AuthForm({ type }: Props) {
       ))}
       <p className='text-rose-500 text-sm'>{error}</p>
       <Button type='submit'>
-        <MailOpen /> 이메일로 로그인하기
+        <MailOpen /> {btnLabel}
       </Button>
     </form>
   );

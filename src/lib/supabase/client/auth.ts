@@ -5,27 +5,16 @@ import client from "./client";
  * Supabase 회원가입을 위한 함수
  * @param string email - 회원가입에 사용할 email
  * @param string password - 회원가입에 사용할 password
- * @param string nickname - 회원가입에 사용할 nickname
  */
 export interface SignUpHandlerArgs {
   email: string;
   password: string;
-  nickname: string;
 }
 
-export const signUpHandler = async ({
-  email,
-  password,
-  nickname,
-}: SignUpHandlerArgs) => {
+export const signUpHandler = async ({ email, password }: SignUpHandlerArgs) => {
   const { error: signUpError } = await client.auth.signUp({
     email,
     password,
-    options: {
-      data: {
-        display_name: nickname,
-      },
-    },
   });
 
   if (signUpError) {
