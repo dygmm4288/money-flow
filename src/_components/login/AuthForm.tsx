@@ -79,7 +79,7 @@ export default function AuthForm({ type }: Props) {
     };
 
   const handleError = (err: AuthApiError) => {
-    console.log(err.message);
+    console.log(err);
     setFormData({ email: "", password: "", passwordConfirm: "" });
     if (err.message === "Invalid login credentials") {
       setError("올바르지 않은 정보입니다");
