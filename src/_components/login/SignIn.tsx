@@ -2,11 +2,13 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import _ from "lodash";
+import Link from "next/link";
 import Logo from "../common/Logo";
 import AuthForm from "./AuthForm";
 import SocialBtn from "./SocialBtn";
@@ -40,6 +42,11 @@ export default function SignIn() {
           </div>
         </div>
       </CardContent>
+      <CardFooter className='flex flex-row justify-end'>
+        <Link href='/login?type=signup' className='underline'>
+          회원가입 하러가기
+        </Link>
+      </CardFooter>
     </Card>
   );
 }

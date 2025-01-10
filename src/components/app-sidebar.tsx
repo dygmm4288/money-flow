@@ -4,7 +4,7 @@ import * as React from "react";
 import {
   AudioWaveform,
   BookOpen,
-  Bot,
+  Banknote,
   Command,
   Frame,
   GalleryVerticalEnd,
@@ -53,21 +53,14 @@ const data = {
       ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
+      title: "My Assets",
+      url: "/assets",
+      icon: Banknote,
+      isActive: true,
       items: [
         {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
+          title: "My Assets",
+          url: "/assets/my-assets",
         },
       ],
     },
