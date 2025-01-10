@@ -15,11 +15,10 @@ export default function ChartCard() {
             legend: {
               position: "bottom",
               labels: {
-                // 추가된 부분
                 font: {
-                  size: 14, // 글자 크기
+                  size: 14,
                 },
-                padding: 20, // 레전드 항목 간격
+                padding: 20, 
               },
             },
           },
