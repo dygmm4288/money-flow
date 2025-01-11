@@ -4,7 +4,13 @@ import { Doughnut } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function ChartCard() {
+type Props = {
+  totalBalance: number;
+  expenseTotal: number;
+  incomeTotal: number;
+};
+
+export default function ChartCard({ totalBalance, expenseTotal,incomeTotal }: Props) {
   return (
     <div className="w-full text-center">
       <h1 className="font-bold mb-8">총 자산 현황</h1>
@@ -18,7 +24,7 @@ export default function ChartCard() {
                 font: {
                   size: 14,
                 },
-                padding: 20, 
+                padding: 20,
               },
             },
           },
@@ -28,7 +34,7 @@ export default function ChartCard() {
           datasets: [
             {
               backgroundColor: ["#1E90FF", "#008B8B", "#FF7F50"],
-              data: [100, ((80 / 100) * 100).toFixed(2), (20 / 100) * 100],
+              data: [totalBalance, incomeTotal, expenseTotal],
             },
           ],
         }}
