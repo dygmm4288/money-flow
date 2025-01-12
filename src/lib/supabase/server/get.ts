@@ -9,6 +9,7 @@ export type GET_PARAMS = {
   end?: number;
   order?: `${string} asc` | `${string} desc`;
   id?: number;
+  [key: string]: any;
 };
 
 export const get = async <T extends ModelSchema>(
@@ -74,6 +75,8 @@ export const get = async <T extends ModelSchema>(
 
     query.eq(key, value);
   });
+
+  console.log(query, params);
 
   try {
     const { data } = await query.then();
