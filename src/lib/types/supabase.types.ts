@@ -4,89 +4,112 @@ export type Json =
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Json[]
+  | Json[];
 
 export type Database = {
   graphql_public: {
     Tables: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     Views: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     Functions: {
       graphql: {
         Args: {
-          operationName?: string
-          query?: string
-          variables?: Json
-          extensions?: Json
-        }
-        Returns: Json
-      }
-    }
+          operationName?: string;
+          query?: string;
+          variables?: Json;
+          extensions?: Json;
+        };
+        Returns: Json;
+      };
+    };
     Enums: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     CompositeTypes: {
-      [_ in never]: never
-    }
-  }
+      [_ in never]: never;
+    };
+  };
   public: {
     Tables: {
       pay: {
         Row: {
-          amount: number | null
-          category: string | null
-          created_at: string
-          date: string | null
-          id: number
-          location: string | null
-          riskLevel: string | null
-          tags: string[] | null
-          type: string | null
-        }
+          amount: number | null;
+          category: string | null;
+          created_at: string;
+          date: string | null;
+          id: number;
+          location: string | null;
+          riskLevel: string | null;
+          tags: string[] | null;
+          type: string | null;
+          user: string;
+        };
         Insert: {
-          amount?: number | null
-          category?: string | null
-          created_at?: string
-          date?: string | null
-          id?: number
-          location?: string | null
-          riskLevel?: string | null
-          tags?: string[] | null
-          type?: string | null
-        }
+          amount?: number | null;
+          category?: string | null;
+          created_at?: string;
+          date?: string | null;
+          id?: number;
+          location?: string | null;
+          riskLevel?: string | null;
+          tags?: string[] | null;
+          type?: string | null;
+          user?: string;
+        };
         Update: {
-          amount?: number | null
-          category?: string | null
-          created_at?: string
-          date?: string | null
-          id?: number
-          location?: string | null
-          riskLevel?: string | null
-          tags?: string[] | null
-          type?: string | null
-        }
-        Relationships: []
-      }
-    }
+          amount?: number | null;
+          category?: string | null;
+          created_at?: string;
+          date?: string | null;
+          id?: number;
+          location?: string | null;
+          riskLevel?: string | null;
+          tags?: string[] | null;
+          type?: string | null;
+          user?: string;
+        };
+        Relationships: [];
+      };
+    };
     Views: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     Functions: {
-      [_ in never]: never
-    }
+      get_expanse_total: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          category: string;
+          total_amount: number;
+        }[];
+      };
+      get_expense_total: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          category: string;
+          total_amount: number;
+        }[];
+      };
+      get_income_total: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          category: string;
+          total_amount: number;
+        }[];
+      };
+    };
     Enums: {
-      [_ in never]: never
-    }
+      [_ in never]: never;
+    };
     CompositeTypes: {
-      [_ in never]: never
-    }
-  }
-}
+      [_ in never]: never;
+    };
+  };
+};
 
-type PublicSchema = Database[Extract<keyof Database, "public">]
+type PublicSchema = Database[Extract<keyof Database, "public">];
 
 export type Tables<
   PublicTableNameOrOptions extends
@@ -99,19 +122,19 @@ export type Tables<
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
       Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R
+      Row: infer R;
     }
     ? R
     : never
   : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
-        PublicSchema["Views"])
-    ? (PublicSchema["Tables"] &
-        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
-        Row: infer R
-      }
-      ? R
-      : never
+      PublicSchema["Views"])
+  ? (PublicSchema["Tables"] &
+      PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+      Row: infer R;
+    }
+    ? R
     : never
+  : never;
 
 export type TablesInsert<
   PublicTableNameOrOptions extends
@@ -122,17 +145,17 @@ export type TablesInsert<
     : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I
+      Insert: infer I;
     }
     ? I
     : never
   : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-        Insert: infer I
-      }
-      ? I
-      : never
+  ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+      Insert: infer I;
+    }
+    ? I
     : never
+  : never;
 
 export type TablesUpdate<
   PublicTableNameOrOptions extends
@@ -143,17 +166,17 @@ export type TablesUpdate<
     : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U
+      Update: infer U;
     }
     ? U
     : never
   : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-        Update: infer U
-      }
-      ? U
-      : never
+  ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+      Update: infer U;
+    }
+    ? U
     : never
+  : never;
 
 export type Enums<
   PublicEnumNameOrOptions extends
@@ -165,20 +188,20 @@ export type Enums<
 > = PublicEnumNameOrOptions extends { schema: keyof Database }
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
-    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
-    : never
+  ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+  : never;
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof PublicSchema["CompositeTypes"]
     | { schema: keyof Database },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof Database;
   }
     ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
   ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
-    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
-    : never
+  ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+  : never;
