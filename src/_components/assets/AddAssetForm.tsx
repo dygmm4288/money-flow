@@ -1,8 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Minus, Plus } from "lucide-react";
-
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -14,14 +13,12 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import AssetTypeSelector from "./AssetTypeSelector";
+import { Input } from "@/components/ui/input";
+import { SupabaseClient } from "@supabase/supabase-js";
+import { handleAddAsset } from "@/app/api/assets/route";
 
 export default function AddAssetForm() {
-  const [goal, setGoal] = React.useState(350);
-
-  function onClick(adjustment: number) {
-    setGoal(Math.max(200, Math.min(400, goal + adjustment)));
-  }
-
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -35,17 +32,22 @@ export default function AddAssetForm() {
           <DrawerHeader>
             <DrawerTitle>자산 추가</DrawerTitle>
             <DrawerDescription>
-              은행/카드/저축/투자 등 자산 추가
+              은행/카드/저축 원하는 자산을 추가해주세요.
             </DrawerDescription>
           </DrawerHeader>
           <div className="p-4 pb-0">
             <div className="flex items-center justify-center space-x-2">
-              <div className="flex-1 text-center">자산추가설정</div>
+              <AssetTypeSelector />
             </div>
-            <div className="mt-3 h-[120px]"></div>
+            <div className="mt-3 h-[50px]">
+              <Input placeholder="금액" type="number" />
+            </div>
+            <div className=" h-[50px]">
+              <Input placeholder="계좌명" type="text" />
+            </div>
           </div>
           <DrawerFooter>
-            <Button>추가</Button>
+            <Button onClick={handleAddAsset}>추가</Button>
             <DrawerClose asChild>
               <Button variant="outline">취소</Button>
             </DrawerClose>
