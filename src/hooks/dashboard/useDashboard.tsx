@@ -23,7 +23,7 @@ export default function useDashboard() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch("http://localhost:3000/api/pay_total");
+      const res = await fetch("api/pay");
       const data = await res.json();
 
       setTotalData(data);
@@ -34,15 +34,17 @@ export default function useDashboard() {
 
   const total = 500000;
 
-  const groupedByType =
-    totalData?.reduce<Record<string, PayData[]>>((acc, item) => {
+  const groupedByType = totalData.reduce<Record<string, PayData[]>>(
+    (acc, item) => {
       if (!acc[item.type]) {
         acc[item.type] = [];
       }
 
       acc[item.type].push(item);
       return acc;
-    }, {}) || [];
+    },
+    {}
+  );
 
   const expenseTotal = (groupedByType as GroupedByData).expense
     ?.filter((item) => item.type === "expense")

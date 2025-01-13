@@ -10,13 +10,17 @@ type Props = {
   incomeTotal: number;
 };
 
-export default function ChartCard({ totalBalance, expenseTotal,incomeTotal }: Props) {
+export default function ChartCard({
+  totalBalance,
+  expenseTotal,
+  incomeTotal,
+}: Props) {
   return (
-    <div className="w-full text-center">
+    <div className="w-[500px] h-[500px] text-center">
       <h1 className="font-bold mb-8">총 자산 현황</h1>
       <Doughnut
-        style={{ width: "27rem" }}
         options={{
+          maintainAspectRatio: false,
           plugins: {
             legend: {
               position: "bottom",
