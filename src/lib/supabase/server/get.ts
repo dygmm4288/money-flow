@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { ModelSchema } from "../../types/models.types";
 import { Database } from "../../types/supabase.types";
-import { createClient } from "../server";
+import { createClient } from "./server";
 
 export type GET_PARAMS = {
   limit?: number;

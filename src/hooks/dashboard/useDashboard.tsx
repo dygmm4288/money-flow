@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 
 type PayData = {
   [key: string]: number | string | string[];
@@ -18,13 +18,12 @@ type GroupedByData = {
   income: PayData[];
 };
 
-
 export default function useDashboard() {
   const [totalData, setTotalData] = useState<PayData[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch("api/pay");
+      const res = await fetch("http://localhost:3000/api/pay_total");
       const data = await res.json();
 
       setTotalData(data);
@@ -35,17 +34,15 @@ export default function useDashboard() {
 
   const total = 500000;
 
-  const groupedByType = totalData.reduce<Record<string, PayData[]>>(
-    (acc, item) => {
+  const groupedByType =
+    totalData?.reduce<Record<string, PayData[]>>((acc, item) => {
       if (!acc[item.type]) {
         acc[item.type] = [];
       }
 
       acc[item.type].push(item);
       return acc;
-    },
-    {}
-  );
+    }, {}) || [];
 
   const expenseTotal = (groupedByType as GroupedByData).expense
     ?.filter((item) => item.type === "expense")
@@ -58,6 +55,6 @@ export default function useDashboard() {
     .reduce((acc, item) => {
       return (acc += item.amount);
     }, 0);
-  
-  return {total,expenseTotal,incomeTotal}
+
+  return { total, expenseTotal, incomeTotal };
 }

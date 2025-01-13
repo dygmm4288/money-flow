@@ -1,5 +1,5 @@
 import { InsertSchema, ModelSchema } from "../../types/models.types";
-import { createClient as createSsrClient } from "../server";
+import { createClient as createSsrClient } from "./server";
 
 export const post = async <T extends ModelSchema>(
   model: T,

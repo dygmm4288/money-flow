@@ -20,7 +20,3 @@ export default async function Login({
     </section>
   );
 }
-
-export const getSearchParams = () => {
-  console.log("call search params");
-};

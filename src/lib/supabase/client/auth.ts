@@ -139,8 +139,11 @@ export const updateUserPasswordHandler = async (newPw: string) => {
 // 현재유저의 세션을 가져오는 함수
 export const getSession = async () => {
   const { data, error } = await client.auth.getSession();
-  if (error) {
+  try {
+    if (error) throw error;
+
+    return data;
+  } catch (err) {
     throw error;
   }
-  return data;
 };

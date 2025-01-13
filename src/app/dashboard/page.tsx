@@ -5,13 +5,11 @@ import Expense from "./expense/page";
 import Income from "./income/page";
 
 import BarChart from "@/_components/dashboard/charts/bar/BarChart";
-import { useEffect, useState } from "react";
 import ChartCard from "@/_components/dashboard/charts/doughnut/ChartCard";
 import useDashboard from "@/hooks/dashboard/useDashboard";
 
-
 export default function Page() {
-  const {total, expenseTotal, incomeTotal} = useDashboard();
+  const { total, expenseTotal, incomeTotal } = useDashboard();
 
   return (
     <main className="flex flex-col gap-3">
