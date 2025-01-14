@@ -1,3 +1,4 @@
+import { PayData } from "@/types/dashboard/type";
 import {
   BarElement,
   CategoryScale,
@@ -12,10 +13,11 @@ Chart.register(BarElement, Tooltip, CategoryScale, LinearScale);
 
 type Props = {
   isCurrent: boolean;
+  data: PayData[];
   type: "expense" | "income";
 };
 
-export default function BarChart({ isCurrent = true, type }: Props) {
+export default function BarChart({ isCurrent = true, type, data }: Props) {
   const titleRenderer = () => {
     switch (type) {
       case "expense":
@@ -41,12 +43,13 @@ export default function BarChart({ isCurrent = true, type }: Props) {
           },
         }}
         data={{
-          labels: ["저축", "쇼핑", "주거비", "식비"],
+          labels: data.map((item) => item.category),
           datasets: [
             {
               label: "이번 달 지출 내역",
               backgroundColor: ["#1E90FF", "#008B8B", "#FF7F50", "#d2b4de "],
-              data: [500000, 150000, 300000, 50000],
+              data: data.map((item) => item.amount),
+              barThickness: 15 / data.map((item) => item.category).length,
             },
           ],
         }}

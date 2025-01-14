@@ -8,13 +8,19 @@ import BarChart from "@/_components/dashboard/charts/bar/BarChart";
 import ChartCard from "@/_components/dashboard/charts/doughnut/ChartCard";
 import useDashboard from "@/hooks/dashboard/useDashboard";
 import { useEffect, useState } from "react";
+import { GroupedByData } from "@/types/dashboard/type";
 
 export default function Page() {
-  const { total, expenseTotal, incomeTotal } = useDashboard();
+  const {
+    total,
+    expenseTotal,
+    incomeTotal,
+    totalData: totalGroupedData,
+  } = useDashboard();
 
-  const [totalData, setTotalData] = useState();
+  const [totalData, setTotalData] = useState<GroupedByData>();
 
-  // TODO 지출, 수입 데이터 barChart에 파싱해서 내려주기
+  // TODO 지출, 수입 데이터 barChart에 내려주기
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch("api/pay_total");
@@ -26,7 +32,10 @@ export default function Page() {
     fetchData();
   }, []);
 
-  console.log(totalData);
+  const expenseBarData =
+    totalGroupedData?.filter((item) => item.type === "expense") || [];
+  const incomeBarData =
+    totalGroupedData?.filter((item) => item.type === "income") || [];
 
   return (
     <main className="flex flex-col gap-3">
@@ -39,12 +48,12 @@ export default function Page() {
           incomeTotal={incomeTotal || 0}
         />
         <div className="flex flex-col gap-2">
-          <BarChart isCurrent={false} type="income" />
-          <BarChart isCurrent={false} type="expense" />
+          <BarChart isCurrent={false} type="income" data={incomeBarData} />
+          <BarChart isCurrent={false} type="expense" data={expenseBarData} />
         </div>
         <div className="flex flex-col gap-2">
-          <BarChart isCurrent type="income" />
-          <BarChart isCurrent type="expense" />
+          <BarChart isCurrent type="income" data={incomeBarData} />
+          <BarChart isCurrent type="expense" data={expenseBarData} />
         </div>
       </section>
     </main>

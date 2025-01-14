@@ -1,22 +1,5 @@
+import { GroupedByData, PayData } from "@/types/dashboard/type";
 import React, { useEffect, useState } from "react";
-
-type PayData = {
-  [key: string]: number | string | string[];
-  amount: number;
-  category: string;
-  created_at: string;
-  date: string;
-  id: number;
-  location: string;
-  riskLevel: string | number;
-  tags: string[];
-  type: string;
-};
-
-type GroupedByData = {
-  expense: PayData[];
-  income: PayData[];
-};
 
 export default function useDashboard() {
   const [totalData, setTotalData] = useState<PayData[]>([]);
@@ -58,5 +41,5 @@ export default function useDashboard() {
       return (acc += item.amount);
     }, 0);
 
-  return { total, expenseTotal, incomeTotal };
+  return { total, expenseTotal, incomeTotal, totalData };
 }
