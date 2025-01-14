@@ -32,6 +32,8 @@ export default function Page() {
     fetchData();
   }, []);
 
+  // bar차트 데이터
+  // TODO: 결제일을 filter해서 이전 달과 이번 달 데이터로 나누기
   const expenseBarData =
     totalGroupedData?.filter((item) => item.type === "expense") || [];
   const incomeBarData =
