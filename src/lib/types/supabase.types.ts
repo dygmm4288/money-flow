@@ -70,36 +70,36 @@ export type Database = {
         };
         Relationships: [];
       };
-      assets: {
+      assets_duplicate: {
         Row: {
           id: number;
-          created_at: string;
-          updated_at: string;
-          type: string | null;
+          created_at: Date;
+          updated_at: Date;
+          type: "은행" | "카드" | "저축" | null;
           amount: number | null;
           name: string;
-          card: number;
-          user: string;
+          // card: number;
+          // user: string;
         };
         Insert: {
           id: number;
-          created_at: string;
-          updated_at: string;
-          type: string | null;
+          created_at: Date;
+          updated_at: Date;
+          type: "은행" | "카드" | "저축" | null;
           amount: number | null;
           name: string;
-          card: number;
-          user: string;
+          // card: number;
+          // user: string;
         };
         Update: {
           id: number;
-          created_at: string;
-          updated_at: string;
-          type: string | null;
+          created_at: Date;
+          updated_at: Date;
+          type: "은행" | "카드" | "저축" | null;
           amount: number | null;
           name: string;
-          card: number;
-          user: string;
+          // card: number;
+          // user: string;
         };
         Relationships: [];
       };
