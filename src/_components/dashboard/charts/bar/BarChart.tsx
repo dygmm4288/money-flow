@@ -43,13 +43,13 @@ export default function BarChart({ isCurrent = true, type, data }: Props) {
           },
         }}
         data={{
-          labels: data.map((item) => item.category),
+          labels: data?.map((item) => item.category),
           datasets: [
             {
               label: "이번 달 지출 내역",
               backgroundColor: ["#1E90FF", "#008B8B", "#FF7F50", "#d2b4de "],
-              data: data.map((item) => item.amount),
-              barThickness: 15 / data.map((item) => item.category).length,
+              data: data?.map((item) => item.amount),
+              barThickness: 50 / data?.map((item) => item.category).length,
             },
           ],
         }}
