@@ -7,7 +7,7 @@ export default async function Login({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const { type } = await searchParams;
+  const { type, next_path } = await searchParams;
 
   if (!type) {
     redirect("/login?type=signin");
@@ -15,7 +15,7 @@ export default async function Login({
 
   return (
     <section className='w-full min-h-screen flex justify-center items-center'>
-      {type === "signin" && <SignIn />}
+      {type === "signin" && <SignIn nextPath={next_path as string} />}
       {type === "signup" && <SignUp />}
     </section>
   );

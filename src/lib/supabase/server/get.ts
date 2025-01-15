@@ -76,7 +76,7 @@ export const get = async <T extends ModelSchema>(
     query.eq(key, value);
   });
 
-  console.log(query, params);
+  // console.log(query, params);
 
   try {
     const { data } = await query.then();
@@ -86,11 +86,18 @@ export const get = async <T extends ModelSchema>(
   }
 };
 
-export const get_only_user = (model: ModelSchema, params: GET_PARAMS) => {
-  // TODO : user 확인 로직 추가
+export const get_only_user = async (
+  model: ModelSchema,
+  params?: GET_PARAMS,
+  nextPath?: string,
+) => {
   return get(model, params);
 };
 
-export const get_one = (model: ModelSchema, id: number, params: GET_PARAMS) => {
+export const get_one = (
+  model: ModelSchema,
+  id: number,
+  params?: GET_PARAMS,
+) => {
   return get(model, _.merge(params, { limit: 1, id }));
 };

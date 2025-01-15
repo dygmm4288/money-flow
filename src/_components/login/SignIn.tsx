@@ -1,3 +1,4 @@
+"use server";
 import {
   Card,
   CardContent,
@@ -13,7 +14,7 @@ import Logo from "../common/Logo";
 import AuthForm from "./AuthForm";
 import SocialBtn from "./SocialBtn";
 
-export default function SignIn() {
+export default async function SignIn({ nextPath }: { nextPath?: string }) {
   return (
     <Card className='flex flex-col w-1/2'>
       <div className='flex justify-center items-center my-6 gap-3'>
@@ -27,7 +28,7 @@ export default function SignIn() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <AuthForm type='signin' />
+        <AuthForm type='signin' nextPath={nextPath} />
         <Separator className='my-4' />
         <div>
           <div className='space-y-1.5'>
