@@ -47,6 +47,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </Breadcrumb>
           </div>
         </header>
+        {/* 메인 페이지들 (expense, income ...) */}
         <div className="px-6">{children}</div>
       </SidebarInset>
     </SidebarProvider>
