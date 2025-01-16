@@ -1,9 +1,6 @@
 import AssetList from "@/_components/assets/AssetList";
-import { Separator } from "@/components/ui/separator";
-import { createClient } from "@/lib/supabase/server/server";
+import { get } from "@/lib/supabase/server/get";
 import { Banknote, CreditCard, PiggyBankIcon } from "lucide-react";
-import { Span } from "next/dist/trace";
-import React from "react";
 
 interface AssetType {
   id: string;
@@ -16,8 +13,7 @@ interface AssetType {
 }
 
 export default async function Page() {
-  const supabase = await createClient();
-  const { data, error } = await supabase.from("assets_duplicate").select("*");
+  const { data } = await get("assets");
   const filterByAssetTypes = {
     banks: data?.filter((item: AssetType) => item.type === "은행") || [],
     cards: data?.filter((item: AssetType) => item.type === "카드") || [],
@@ -28,16 +24,16 @@ export default async function Page() {
     items.reduce((total, item) => total + item.amount, 0);
 
   return (
-    <div className="flex flex-col gap-10 mr-1">
+    <div className='flex flex-col gap-10 mr-1'>
       <div>
         <AssetList
           icon={<Banknote />}
-          categoryName="은행"
+          categoryName='은행'
           totalAmount={calculateTotal(filterByAssetTypes.banks)}
         />
-        <ul className="flex flex-col gap-2">
+        <ul className='flex flex-col gap-2'>
           {filterByAssetTypes.banks.map((item) => (
-            <li key={item.id} className="flex items-center justify-between">
+            <li key={item.id} className='flex items-center justify-between'>
               <span>{item.name}</span>
               <span>{item.amount.toLocaleString()}</span>
             </li>
@@ -48,12 +44,12 @@ export default async function Page() {
       <div>
         <AssetList
           icon={<CreditCard />}
-          categoryName="카드"
+          categoryName='카드'
           totalAmount={calculateTotal(filterByAssetTypes.cards)}
         />
-        <ul className="flex flex-col gap-2">
+        <ul className='flex flex-col gap-2'>
           {filterByAssetTypes.cards.map((item) => (
-            <li key={item.id} className="flex items-center justify-between">
+            <li key={item.id} className='flex items-center justify-between'>
               <span>{item.name}</span>
               <span>{item.amount.toLocaleString()}</span>
             </li>
@@ -64,12 +60,12 @@ export default async function Page() {
       <div>
         <AssetList
           icon={<PiggyBankIcon />}
-          categoryName="저축"
+          categoryName='저축'
           totalAmount={calculateTotal(filterByAssetTypes.savings)}
         />
-        <ul className="flex flex-col gap-2">
+        <ul className='flex flex-col gap-2'>
           {filterByAssetTypes.savings.map((item) => (
-            <li key={item.id} className="flex items-center justify-between">
+            <li key={item.id} className='flex items-center justify-between'>
               <span>{item.name}</span>
               <span>{item.amount.toLocaleString()}</span>
             </li>

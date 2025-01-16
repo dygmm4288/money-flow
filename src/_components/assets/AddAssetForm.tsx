@@ -1,13 +1,6 @@
 "use client";
 
-import * as React from "react";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { postClient } from "@/lib/supabase/client/post";
 import {
   Drawer,
   DrawerClose,
@@ -26,6 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -33,6 +27,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus } from "lucide-react";
+import * as React from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const assetTypeValues = ["은행", "카드", "저축"] as const;
 const formSchema = z.object({
@@ -71,7 +70,10 @@ export default function AddAssetForm() {
         // user: uuid
       };
 
-      await postClient(model, data);
+      const res = await fetch("/api/assets", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
       setIsOpen(false);
 
       form.reset();
@@ -89,7 +91,7 @@ export default function AddAssetForm() {
         </Button>
       </DrawerTrigger>
       <DrawerContent>
-        <div className="mx-auto w-full max-w-sm py-10">
+        <div className='mx-auto w-full max-w-sm py-10'>
           <DrawerHeader>
             <DrawerTitle>자산 추가</DrawerTitle>
             <DrawerDescription>원하는 자산을 추가해주세요.</DrawerDescription>
@@ -98,10 +100,10 @@ export default function AddAssetForm() {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(addAssetHandler)}
-              className="space-y-6 p-4 pb-5">
+              className='space-y-6 p-4 pb-5'>
               <FormField
                 control={form.control}
-                name="type"
+                name='type'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>자산타입</FormLabel>
@@ -110,7 +112,7 @@ export default function AddAssetForm() {
                       defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="자산 타입을 선택해주세요." />
+                          <SelectValue placeholder='자산 타입을 선택해주세요.' />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -127,13 +129,13 @@ export default function AddAssetForm() {
 
               <FormField
                 control={form.control}
-                name="name"
+                name='name'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>자산명</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="자산명을 입력해주세요. (2-20자 내외)"
+                        placeholder='자산명을 입력해주세요. (2-20자 내외)'
                         {...field}
                       />
                     </FormControl>
@@ -144,15 +146,15 @@ export default function AddAssetForm() {
 
               <FormField
                 control={form.control}
-                name="amount"
+                name='amount'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>자산금액</FormLabel>
                     <FormControl>
                       <Input
-                        type="text"
+                        type='text'
                         value={field.value.toLocaleString()}
-                        placeholder="금액을 입력해주세요"
+                        placeholder='금액을 입력해주세요'
                         onChange={(e) => {
                           const inputValue = e.target.value.replace(/,/g, ""); // 기존 콤마 제거
                           if (/^\d*$/.test(inputValue)) {
@@ -166,12 +168,12 @@ export default function AddAssetForm() {
                   </FormItem>
                 )}
               />
-              <Button type="submit">저장</Button>
+              <Button type='submit'>저장</Button>
             </form>
           </Form>
           <DrawerFooter>
             <DrawerClose asChild>
-              <Button variant="outline">취소</Button>
+              <Button variant='outline'>취소</Button>
             </DrawerClose>
           </DrawerFooter>
         </div>

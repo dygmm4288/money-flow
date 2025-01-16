@@ -14,7 +14,7 @@ export default function useDashboard() {
 
     const fetchTotal = async () => {
       const res = await fetch(
-        "api/pay_total?start_date=2024-01-01&end_date=2024-02-01",
+        "api/pay_total?start_date=2025-01-01&end_date=2025-02-01",
       );
       const data = await res.json();
 
