@@ -45,7 +45,6 @@ export type Database = {
           riskLevel: string | null;
           tags: string[] | null;
           type: string | null;
-          user: string;
         };
         Insert: {
           amount?: number | null;
@@ -57,7 +56,6 @@ export type Database = {
           riskLevel?: string | null;
           tags?: string[] | null;
           type?: string | null;
-          user?: string;
         };
         Update: {
           amount?: number | null;
@@ -69,7 +67,39 @@ export type Database = {
           riskLevel?: string | null;
           tags?: string[] | null;
           type?: string | null;
-          user?: string;
+        };
+        Relationships: [];
+      };
+      assets_duplicate: {
+        Row: {
+          id: number;
+          created_at: Date;
+          updated_at: Date;
+          type: "은행" | "카드" | "저축" | null;
+          amount: number | null;
+          name: string;
+          // card: number;
+          // user: string;
+        };
+        Insert: {
+          id: number;
+          created_at: Date;
+          updated_at: Date;
+          type: "은행" | "카드" | "저축" | null;
+          amount: number | null;
+          name: string;
+          // card: number;
+          // user: string;
+        };
+        Update: {
+          id: number;
+          created_at: Date;
+          updated_at: Date;
+          type: "은행" | "카드" | "저축" | null;
+          amount: number | null;
+          name: string;
+          // card: number;
+          // user: string;
         };
         Relationships: [];
       };
@@ -78,27 +108,7 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      get_expanse_total: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          category: string;
-          total_amount: number;
-        }[];
-      };
-      get_expense_total: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          category: string;
-          total_amount: number;
-        }[];
-      };
-      get_income_total: {
-        Args: Record<PropertyKey, never>;
-        Returns: {
-          category: string;
-          total_amount: number;
-        }[];
-      };
+      [_ in never]: never;
     };
     Enums: {
       [_ in never]: never;

@@ -1,39 +1,49 @@
 "use client";
 
-import { AppSidebar } from "@/components/app-sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { usePathname } from "next/navigation";
-import History from "./history/page";
-import Expense from "./expense/page";
-import Income from "./income/page";
+import BarChart from "@/_components/dashboard/charts/bar/BarChart";
+import ChartCard from "@/_components/dashboard/charts/doughnut/ChartCard";
+import useBarChartData from "@/hooks/dashboard/useBarChartData";
+import useDashboard from "@/hooks/dashboard/useDashboard";
 
 export default function Page() {
-  const pathName = usePathname();
+  const { total, expenseTotal, incomeTotal } = useDashboard();
 
-  const renderPage = (pathName: string) => {
-    switch (pathName) {
-      case "/dashboard":
-        return <div>dashBoard</div>;
-      case "/dashboard/income":
-        return <Income />;
-      case "/dashboard/expense":
-        return <Expense />;
-      case "/dashboard/history":
-        return <History />;
-    }
-  };
-  return <main className="px-4 py-4">dashboard Page</main>;
+  const { expenseBarData, incomeBarData } = useBarChartData();
+
+  return (
+    <main className="flex flex-col gap-3">
+      <h1 className="font-bold text-2xl">Dashboard</h1>
+
+      <section className="flex items-center justify-evenly">
+        <ChartCard
+          totalBalance={total}
+          expenseTotal={expenseTotal || 0}
+          incomeTotal={incomeTotal || 0}
+        />
+        {/* 지난 달 수입, 지출 */}
+        <div className="flex flex-col gap-2">
+          <BarChart
+            isCurrent={false}
+            type="income"
+            data={incomeBarData.lastMonth}
+          />
+          <BarChart
+            isCurrent={false}
+            type="expense"
+            data={expenseBarData.lastMonth}
+          />
+        </div>
+
+        {/* 이번 달 수입, 지출 */}
+        <div className="flex flex-col gap-2">
+          <BarChart isCurrent type="income" data={incomeBarData.currentMonth} />
+          <BarChart
+            isCurrent
+            type="expense"
+            data={expenseBarData.currentMonth}
+          />
+        </div>
+      </section>
+    </main>
+  );
 }
