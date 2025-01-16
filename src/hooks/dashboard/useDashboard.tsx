@@ -1,5 +1,5 @@
 import { GroupedByData, PayData } from "@/types/dashboard/type";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function useDashboard() {
   const [totalData, setTotalData] = useState<PayData[]>([]);
@@ -11,6 +11,17 @@ export default function useDashboard() {
 
       setTotalData(data);
     };
+
+    const fetchTotal = async () => {
+      const res = await fetch(
+        "api/pay_total?start_date=2024-01-01&end_date=2024-02-01",
+      );
+      const data = await res.json();
+
+      console.log(data);
+    };
+
+    fetchTotal();
 
     fetchData();
   }, []);
@@ -26,7 +37,7 @@ export default function useDashboard() {
       acc[item.type].push(item);
       return acc;
     },
-    {}
+    {},
   );
 
   const expenseTotal = (groupedByType as GroupedByData).expense
