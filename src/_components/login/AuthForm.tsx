@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signInHandler } from "@/lib/supabase/server/auth";
+import { signInHandler, signUpHandler } from "@/lib/supabase/server/auth";
 import { convertError } from "@/lib/utils/auth";
 import _ from "lodash";
 import { MailOpen } from "lucide-react";
@@ -49,7 +49,12 @@ export default function AuthForm({ type, nextPath }: Props) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    const res = await signInHandler(formData, nextPath);
+    let res = null;
+    if (type === "signin") {
+      res = await signInHandler(formData, nextPath);
+    } else if (type === "signup") {
+      res = await signUpHandler(formData);
+    }
 
     if (res) {
       setError(convertError(res));

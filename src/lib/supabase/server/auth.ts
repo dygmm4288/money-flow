@@ -48,3 +48,21 @@ export const signInHandler = async (formData: FormData, nextPath?: string) => {
       throw new Error("LoginError: 올바른 케이스가 아닙니다.");
   }
 };
+
+export const signUpHandler = async (formData: FormData) => {
+  const supabase = await createClient();
+
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
+  const { error: signUpError } = await supabase.auth.signUp({
+    email,
+    password,
+  });
+
+  if (signUpError) {
+    return signUpError.code;
+  }
+
+  return null;
+};
