@@ -54,8 +54,6 @@ export default function AddAssetForm() {
     },
   });
 
-  const { reset, register, handleSubmit, control } = useForm();
-
   // 자산추가 폼 열기/닫기 상태
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -67,7 +65,7 @@ export default function AddAssetForm() {
         created_at: new Date(),
         updated_at: new Date(),
         type: values.type,
-        amount: Number(values.amount),
+        amount: values.amount,
         name: values.name,
         // card: 10,
         // user: uuid

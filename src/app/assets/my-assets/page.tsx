@@ -1,33 +1,47 @@
 import AssetList from "@/_components/assets/AssetList";
 import { Separator } from "@/components/ui/separator";
-import {
-  Banknote,
-  BanknoteIcon,
-  CreditCard,
-  LucideBanknote,
-  PiggyBank,
-  PiggyBankIcon,
-} from "lucide-react";
+import { createClient } from "@/lib/supabase/server/server";
+import { Banknote, CreditCard, PiggyBankIcon } from "lucide-react";
+import { Span } from "next/dist/trace";
 import React from "react";
 
-export default function Page() {
+interface AssetType {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  type: string;
+  amount: number;
+  name: string;
+  card: string | null;
+}
+
+export default async function Page() {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("assets_duplicate").select("*");
+  const filterByAssetTypes = {
+    banks: data?.filter((item: AssetType) => item.type === "은행") || [],
+    cards: data?.filter((item: AssetType) => item.type === "카드") || [],
+    savings: data?.filter((item: AssetType) => item.type === "저축") || [],
+  };
+
+  const calculateTotal = (items: AssetType[]) =>
+    items.reduce((total, item) => total + item.amount, 0);
+
   return (
     <div className="flex flex-col gap-10 mr-1">
       <div>
         <AssetList
           icon={<Banknote />}
           categoryName="은행"
-          totalAmount={2000000}
+          totalAmount={calculateTotal(filterByAssetTypes.banks)}
         />
         <ul className="flex flex-col gap-2">
-          <li className="flex items-center justify-between">
-            <span>카카오뱅크</span>
-            <span>2,000,000</span>
-          </li>
-          <li className="flex items-center justify-between">
-            <span>국민은행</span>
-            <span>1,000,000</span>
-          </li>
+          {filterByAssetTypes.banks.map((item) => (
+            <li key={item.id} className="flex items-center justify-between">
+              <span>{item.name}</span>
+              <span>{item.amount.toLocaleString()}</span>
+            </li>
+          ))}
         </ul>
       </div>
 
@@ -35,17 +49,15 @@ export default function Page() {
         <AssetList
           icon={<CreditCard />}
           categoryName="카드"
-          totalAmount={-2000000}
+          totalAmount={calculateTotal(filterByAssetTypes.cards)}
         />
         <ul className="flex flex-col gap-2">
-          <li className="flex items-center justify-between">
-            <span>롯데카드</span>
-            <span>-500,000</span>
-          </li>
-          <li className="flex items-center justify-between">
-            <span>국민은행</span>
-            <span>-1,500,000</span>
-          </li>
+          {filterByAssetTypes.cards.map((item) => (
+            <li key={item.id} className="flex items-center justify-between">
+              <span>{item.name}</span>
+              <span>{item.amount.toLocaleString()}</span>
+            </li>
+          ))}
         </ul>
       </div>
 
@@ -53,17 +65,15 @@ export default function Page() {
         <AssetList
           icon={<PiggyBankIcon />}
           categoryName="저축"
-          totalAmount={3000000}
+          totalAmount={calculateTotal(filterByAssetTypes.savings)}
         />
         <ul className="flex flex-col gap-2">
-          <li className="flex items-center justify-between">
-            <span>주택청약</span>
-            <span>1,500,000</span>
-          </li>
-          <li className="flex items-center justify-between">
-            <span>26주 적금</span>
-            <span>1,500,000</span>
-          </li>
+          {filterByAssetTypes.savings.map((item) => (
+            <li key={item.id} className="flex items-center justify-between">
+              <span>{item.name}</span>
+              <span>{item.amount.toLocaleString()}</span>
+            </li>
+          ))}
         </ul>
       </div>
     </div>
