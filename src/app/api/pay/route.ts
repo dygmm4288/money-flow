@@ -1,10 +1,8 @@
-import { createClient } from "@/lib/supabase/server/server";
+import { get } from "@/lib/supabase/server/get";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const supabase = await createClient();
-
-  let { data: pay, error } = await supabase.from("pay_duplicate").select("*");
+  let { data: pay, error } = await get("pay");
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

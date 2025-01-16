@@ -1,6 +1,5 @@
 import _ from "lodash";
 import { ModelSchema } from "../../types/models.types";
-import { Database } from "../../types/supabase.types";
 import { createClient } from "./server";
 
 export type GET_PARAMS = {
@@ -15,7 +14,7 @@ export type GET_PARAMS = {
 export const get = async <T extends ModelSchema>(
   model: T,
   params?: GET_PARAMS,
-): Promise<Database["public"]["Tables"][T]["Row"][] | null> => {
+) => {
   const db = await createClient();
 
   const query = db.from(model).select();
@@ -76,14 +75,10 @@ export const get = async <T extends ModelSchema>(
     query.eq(key, value);
   });
 
+  console.log(query, params);
   // console.log(query, params);
 
-  try {
-    const { data } = await query.then();
-    return data;
-  } catch (err) {
-    throw err;
-  }
+  return await query.then();
 };
 
 export const get_only_user = async (
