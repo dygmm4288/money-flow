@@ -3,7 +3,6 @@
 import { Separator } from "@/components/ui/separator";
 import { Edit3, X } from "lucide-react";
 import React from "react";
-import client from "@/lib/supabase/client/client";
 interface AssetListProps {
   icon: React.ReactNode;
   totalAmount: number;
@@ -23,7 +22,10 @@ export default function AssetList({
 }: AssetListProps) {
   const deleteAssetHandler = async (id: number) => {
     try {
-      await client.from("assets").delete().eq("id", id);
+      await fetch("/api/assets", {
+        method: "DELETE",
+        body: JSON.stringify({ id }),
+      });
     } catch (error) {
       throw new Error();
     }
@@ -31,9 +33,9 @@ export default function AssetList({
 
   return (
     <div>
-      <div className="flex flex-col gap-2 mb-5">
-        <div className="flex items-center justify-between">
-          <h2 className="flex items-center gap-2 text-xl font-bold">
+      <div className='flex flex-col gap-2 mb-5'>
+        <div className='flex items-center justify-between'>
+          <h2 className='flex items-center gap-2 text-xl font-bold'>
             {icon}
             {typeName}
           </h2>
@@ -45,15 +47,15 @@ export default function AssetList({
           </p>
         </div>
         <Separator />
-        <ul className="flex flex-col gap-2">
+        <ul className='flex flex-col gap-2'>
           {assetData.map((asset) => (
-            <li className="flex items-center justify-between" key={asset.name}>
+            <li className='flex items-center justify-between' key={asset.name}>
               <span>{asset.name}</span>
-              <div className="flex ">
+              <div className='flex '>
                 <span>{asset.amount.toLocaleString()} 원</span>
-                <Edit3 className="cursor-pointer" />
+                <Edit3 className='cursor-pointer' />
                 <X
-                  className="cursor-pointer"
+                  className='cursor-pointer'
                   onClick={() => deleteAssetHandler(asset.id)}
                 />
               </div>

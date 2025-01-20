@@ -1,3 +1,4 @@
+import { deleting } from "@/lib/supabase/server/delete";
 import { get } from "@/lib/supabase/server/get";
 import { post } from "@/lib/supabase/server/post";
 import { NextRequest, NextResponse } from "next/server";
@@ -27,4 +28,20 @@ export async function GET(req: NextRequest) {
   }
 
   return NextResponse.json(assets, { status: 200 });
+}
+
+export async function DELETE(req: NextRequest) {
+  const data = await req.json();
+
+  const { id } = data;
+  if (!id) {
+    return NextResponse.json({ error: "Not Exists Data" }, { status: 404 });
+  }
+
+  const error = await deleting("assets", id as number);
+
+  if (error) {
+    return NextResponse.json({ error: "Not Exists Data" }, { status: 404 });
+  }
+  return NextResponse.json(null, { status: 200 });
 }
