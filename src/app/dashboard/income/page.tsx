@@ -19,7 +19,7 @@ export default function Page() {
   const [payData, setPayData] = React.useState<PayData[]>([]);
   const [status, setStatus] = React.useState<"" | "posting" | "posted">("");
 
-  const { watch, setValue } = useForm<PayData>({
+  const { watch, setValue, reset } = useForm<PayData>({
     defaultValues: {
       amount: 0,
       category: "",
@@ -84,6 +84,7 @@ export default function Page() {
         body: JSON.stringify(data),
       });
       setStatus("posted");
+      reset();
     } catch (error) {
       console.log(error);
     } finally {
