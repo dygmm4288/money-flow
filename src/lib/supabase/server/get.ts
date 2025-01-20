@@ -75,9 +75,6 @@ export const get = async <T extends ModelSchema>(
     query.eq(key, value);
   });
 
-  console.log(query, params);
-  // console.log(query, params);
-
   return await query.then();
 };
 
