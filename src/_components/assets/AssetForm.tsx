@@ -54,7 +54,11 @@ interface AssetFormProps {
   onSubmit: (data: z.infer<typeof formSchema>, id?: number) => void;
 }
 
-export default function AssetForm() {
+export default function AssetForm({
+  isEditMode = false,
+  assetData,
+  onSubmit,
+}: AssetFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -95,10 +99,14 @@ export default function AssetForm() {
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
-        <Button>
-          <Plus />
-          자산추가
-        </Button>
+        {isEditMode ? (
+          <Button>
+            <Plus />
+            자산추가
+          </Button>
+        ) : (
+          "수정"
+        )}
       </DrawerTrigger>
       <DrawerContent>
         <div className="mx-auto w-full max-w-sm py-10">

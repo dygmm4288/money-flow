@@ -67,8 +67,6 @@ export default function AssetClient({ assetData }: { assetData: AssetType[] }) {
           }))}
         />
       ))}
-
-      <AddAssetForm />
     </div>
   );
 }
