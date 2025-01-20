@@ -76,3 +76,15 @@ export const logoutHandler = async () => {
 
   return null;
 };
+
+export const getUser = async () => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error) redirect("/login?type=signin");
+
+  const user = { email: data.user.email! };
+
+  return user;
+};
