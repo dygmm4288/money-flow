@@ -29,9 +29,9 @@ import {
 } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
-import * as React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import * as React from "react";
 
 const assetTypeValues = ["은행", "카드", "저축"] as const;
 const formSchema = z.object({
@@ -43,7 +43,18 @@ const formSchema = z.object({
   type: z.enum(assetTypeValues),
 });
 
-export default function AddAssetForm() {
+interface AssetFormProps {
+  isEditMode?: boolean;
+  assetDate: {
+    id?: number;
+    name: string;
+    amount: number;
+    type: string;
+  };
+  onSubmit: (data: z.infer<typeof formSchema>, id?: number) => void;
+}
+
+export default function AssetForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,11 +66,9 @@ export default function AddAssetForm() {
 
   // 자산추가 폼 열기/닫기 상태
   const [isOpen, setIsOpen] = React.useState(false);
-  const [isEdit, setIsEdit] = React.useState(false);
 
   const addAssetHandler = async (values: z.infer<typeof formSchema>) => {
     try {
-      const model = "assets";
       const data = {
         id: Math.floor(Math.random() * (1000000 - 1 + 1)) + 1,
         created_at: new Date(),

@@ -19,7 +19,7 @@ import {
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import AddAssetForm from "@/_components/assets/AddAssetForm";
+import AddAssetForm from "@/_components/assets/AssetForm";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

@@ -2,6 +2,7 @@
 
 import { Separator } from "@/components/ui/separator";
 import { Edit3, X } from "lucide-react";
+import { revalidatePath } from "next/cache";
 import React from "react";
 interface AssetListProps {
   icon: React.ReactNode;
@@ -33,9 +34,9 @@ export default function AssetList({
 
   return (
     <div>
-      <div className='flex flex-col gap-2 mb-5'>
-        <div className='flex items-center justify-between'>
-          <h2 className='flex items-center gap-2 text-xl font-bold'>
+      <div className="flex flex-col gap-2 mb-5">
+        <div className="flex items-center justify-between">
+          <h2 className="flex items-center gap-2 text-xl font-bold">
             {icon}
             {typeName}
           </h2>
@@ -47,16 +48,16 @@ export default function AssetList({
           </p>
         </div>
         <Separator />
-        <ul className='flex flex-col gap-2'>
+        <ul className="flex flex-col gap-2">
           {assetData.map((asset) => (
-            <li className='flex items-center justify-between' key={asset.name}>
+            <li className="flex items-center justify-between" key={asset.name}>
               <span>{asset.name}</span>
-              <div className='flex '>
+              <div className="flex ">
                 <span>{asset.amount.toLocaleString()} 원</span>
-                <Edit3 className='cursor-pointer' />
+                <Edit3 className="cursor-pointer" />
                 <X
-                  className='cursor-pointer'
-                  onClick={() => deleteAssetHandler(asset.id)}
+                  className="cursor-pointer"
+                  onClick={() => deleteAssetHandler(Number(asset.id))}
                 />
               </div>
             </li>
