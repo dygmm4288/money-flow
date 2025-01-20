@@ -1,13 +1,9 @@
 "use client";
 
-import * as React from "react";
 import {
-  AudioWaveform,
-  BookOpen,
   Banknote,
-  Command,
+  BookOpen,
   Frame,
-  GalleryVerticalEnd,
   Map,
   PieChart,
   Settings2,
@@ -130,14 +126,22 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type User = {
+  email: string;
+};
+
+type Props = {
+  user: User;
+} & Omit<React.ComponentProps<typeof Sidebar>, "user">;
+
+export function AppSidebar({ user, ...props }: Props) {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible='icon' {...props}>
       <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
