@@ -14,10 +14,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { PayData } from "@/types/dashboard/type";
+import { Drawer as DrawerPrimitive } from "vaul";
 
 export default function Page() {
   const [payData, setPayData] = React.useState<PayData[]>([]);
   const [status, setStatus] = React.useState<"" | "posting" | "posted">("");
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
   const { watch, setValue, reset } = useForm<PayData>({
     defaultValues: {
@@ -89,6 +91,7 @@ export default function Page() {
       console.log(error);
     } finally {
       setStatus("");
+      setIsDrawerOpen(false);
     }
   };
 
@@ -110,7 +113,7 @@ export default function Page() {
   }, [status]);
 
   return (
-    <Drawer>
+    <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
       <table className="table-fixed w-full text-center">
         <thead>
           <tr>
@@ -122,23 +125,26 @@ export default function Page() {
           </tr>
         </thead>
         <tbody>
-          {payData.map((item) => {
-            return (
-              <tr key={item.id}>
-                <td className="border-2 p-2">{item.category}</td>
-                <td className="border-2 p-2 text-right">{item.amount}</td>
-                <td className="border-2 p-2">{item.location}</td>
-                <td className="border-2 p-2">{item.date}</td>
-                <td className="border-2 p-2">{item.tags.join(", ")}</td>
-              </tr>
-            );
-          })}
+          {(payData.filter((item) => item.type === "income") || []).map(
+            (item) => {
+              return (
+                <tr key={item.id} className="animate-slideIn">
+                  <td className="border-2 p-2">{item.category}</td>
+                  <td className="border-2 p-2 text-right">{item.amount}</td>
+                  <td className="border-2 p-2">{item.location}</td>
+                  <td className="border-2 p-2">{item.date}</td>
+                  <td className="border-2 p-2">{item.tags.join(", ")}</td>
+                </tr>
+              );
+            }
+          )}
         </tbody>
       </table>
       <DrawerTrigger asChild className="fixed bottom-4 right-4">
         <Button
           variant="outline"
-          className=" hover: bg-slate-200 text-slate-800">
+          className=" hover: bg-slate-200 text-slate-800"
+          onClick={() => setIsDrawerOpen(true)}>
           수익 추가
         </Button>
       </DrawerTrigger>
@@ -224,7 +230,9 @@ export default function Page() {
           <DrawerFooter>
             <Button onClick={() => addPayHandler(watch())}>등록</Button>
             <DrawerClose asChild>
-              <Button variant="outline">취소</Button>
+              <Button variant="outline" onClick={() => setIsDrawerOpen(false)}>
+                취소
+              </Button>
             </DrawerClose>
           </DrawerFooter>
         </div>
