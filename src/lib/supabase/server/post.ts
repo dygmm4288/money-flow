@@ -4,7 +4,7 @@ import { createClient as createSsrClient } from "./server";
 export const post = async <T extends ModelSchema>(
   model: T,
   modelSchema: InsertSchema<T>,
-  require_user?: Boolean,
+  require_user?: Boolean
 ) => {
   const db = await createSsrClient();
 
@@ -17,6 +17,11 @@ export const post = async <T extends ModelSchema>(
 
   if (user.user) data = { ...data, user: user.user.id };
 
-  const { error } = await db.from(model).insert(data);
+  // const { error } = await db.from(model).insert(data);
+  const { data: insertedData, error } = await db
+    .from(model)
+    .insert(data)
+    .select();
   if (error) return error;
+  return insertedData;
 };

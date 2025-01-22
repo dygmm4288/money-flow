@@ -1,17 +1,18 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
-import { Edit3, X } from "lucide-react";
-import { revalidatePath } from "next/cache";
-import React from "react";
+import { X } from "lucide-react";
+import React, { useMemo } from "react";
+import AssetForm from "./AssetForm";
 interface AssetListProps {
   icon: React.ReactNode;
   totalAmount: number;
   typeName: string;
   assetData: {
+    id: number;
     name: string;
     amount: number;
-    id: string;
+    type: "은행" | "카드" | "저축";
   }[];
 }
 
@@ -54,7 +55,15 @@ export default function AssetList({
               <span>{asset.name}</span>
               <div className="flex ">
                 <span>{asset.amount.toLocaleString()} 원</span>
-                <Edit3 className="cursor-pointer" />
+                <AssetForm
+                  isEditMode={true}
+                  assetData={{
+                    id: asset.id,
+                    name: asset.name,
+                    amount: asset.amount,
+                    type: asset.type,
+                  }}
+                />
                 <X
                   className="cursor-pointer"
                   onClick={() => deleteAssetHandler(Number(asset.id))}

@@ -2,14 +2,12 @@
 
 import AssetList from "@/_components/assets/AssetList";
 import { Banknote, CreditCard, PiggyBankIcon } from "lucide-react";
-import { useState } from "react";
-import AddAssetForm from "./AssetForm";
 
 export interface AssetType {
-  id: string;
+  id: number;
   created_at: string;
   updated_at: string;
-  type: string;
+  type: "은행" | "카드" | "저축";
   amount: number;
   name: string;
   card: string | null;
@@ -34,7 +32,6 @@ const assetTypes = [
 ];
 
 export default function AssetClient({ assetData }: { assetData: AssetType[] }) {
-  const [editingAsset, setEditingAsset] = useState<AssetType | null>(null);
   const filterByAssetTypes = {
     banks: assetData?.filter((item: AssetType) => item.type === "은행") || [],
     cards: assetData?.filter((item: AssetType) => item.type === "카드") || [],
@@ -43,10 +40,6 @@ export default function AssetClient({ assetData }: { assetData: AssetType[] }) {
 
   const calculateTotal = (items: AssetType[]) =>
     items.reduce((total, item) => total + item.amount, 0);
-
-  const editAssetHandler = (asset: AssetType) => {
-    setEditingAsset(asset);
-  };
 
   return (
     <div className="flex flex-col gap-10 mr-1">
@@ -64,6 +57,7 @@ export default function AssetClient({ assetData }: { assetData: AssetType[] }) {
             name: item.name,
             amount: item.amount,
             id: item.id,
+            type: item.type,
           }))}
         />
       ))}

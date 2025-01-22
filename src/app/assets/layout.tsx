@@ -1,6 +1,4 @@
-"use client";
-
-import React from "react";
+import AssetForm from "@/_components/assets/AssetForm";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
@@ -16,17 +14,18 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { usePathname } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import AddAssetForm from "@/_components/assets/AssetForm";
+import { getUser } from "@/lib/supabase/server/auth";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const user = await getUser();
 
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar user={user} />
       <SidebarInset>
         <header className="flex h-16 shrink-0 justify-between mr-5 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
@@ -44,7 +43,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <AddAssetForm />
+          <AssetForm isEditMode={false} />
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           <div>{children}</div>
