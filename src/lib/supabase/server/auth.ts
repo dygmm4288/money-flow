@@ -2,10 +2,12 @@
 import { redirect } from "next/navigation";
 import { createClient } from "./server";
 
-export const signInHandler = async (formData: FormData, nextPath?: string) => {
+export const signInHandler = async (
+  formData: FormData,
+  nextPath?: string,
+  platform = "email",
+) => {
   const supabase = await createClient();
-
-  let platform = "email";
 
   switch (platform) {
     case "email": {
@@ -36,13 +38,13 @@ export const signInHandler = async (formData: FormData, nextPath?: string) => {
               access_type: "offline",
               prompt: "consent",
             },
+            redirectTo: "http://localhost:3000/api/auth/callback",
           },
         });
-
       if (oAuthLoginError) {
-        throw oAuthLoginError;
+        return oAuthLoginError.code;
       }
-      return;
+      redirect(oAuthLoginData.url);
     }
     default:
       throw new Error("LoginError: 올바른 케이스가 아닙니다.");

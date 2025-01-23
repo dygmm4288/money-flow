@@ -1,9 +1,12 @@
+"use client";
 import { Button } from "@/components/ui/button";
+import { signInHandler } from "@/lib/supabase/server/auth";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 type Props = {
   type: "kakao" | "google";
+  nextPath?: string;
 };
 
 const SOCIAL_BTN = {
@@ -24,11 +27,15 @@ const SOCIAL_BTN = {
     bgClass: "bg-white",
   },
 };
-export default function SocialBtn({ type }: Props) {
+export default function SocialBtn({ type, nextPath }: Props) {
   const social = SOCIAL_BTN[type];
 
+  const handleSocialSign = async () => {
+    await signInHandler(new FormData(), nextPath, type);
+  };
+
   return (
-    <Button className={cn("w-full", social.bgClass)}>
+    <Button className={cn("w-full", social.bgClass)} onClick={handleSocialSign}>
       <Image
         alt={social.alt}
         src={social.src}
