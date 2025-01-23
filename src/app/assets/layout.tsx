@@ -43,7 +43,6 @@ export default async function Layout({
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <AssetForm isEditMode={false} />
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
           <div>{children}</div>

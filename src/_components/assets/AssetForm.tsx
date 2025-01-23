@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -19,7 +18,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -27,42 +25,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { zodResolver } from "@hookform/resolvers/zod";
+import * as React from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Edit3, Plus } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import * as React from "react";
-
-const assetTypeValues = ["은행", "카드", "저축"] as const;
-const formSchema = z
-  .object({
-    name: z
-      .string()
-      .min(2, "자산명은 최소 2글자 이상이어야 합니다.")
-      .max(20, "자산명은 최대 20글자까지 가능합니다."),
-    amount: z.preprocess((val) => Number(val), z.number()),
-    card: z
-      .preprocess((val) => Number(val), z.number())
-      .nullable()
-      .optional(),
-    type: z.enum(assetTypeValues),
-  })
-  .refine(
-    (data) => {
-      // 카드 타입일 경우, card 필드가 존재해야 함
-      if (data.type === "카드" && !data.card) {
-        return false;
-      }
-      return true;
-    },
-    {
-      message: "카드 타입을 선택했을 경우, 연동된 계좌를 선택해야 합니다.",
-      path: ["card"], // card 필드에 대한 오류 메시지 표시
-    }
-  );
 
 interface AssetFormProps {
   isEditMode?: boolean;
+  bankData?: {
+    id: number;
+    name: string;
+    amount: number;
+    type: "은행" | "카드" | "저축";
+    card: number | null;
+  }[];
   assetData?: {
     id?: number | undefined;
     name: string;
@@ -72,16 +51,23 @@ interface AssetFormProps {
   };
 }
 
-interface BankAssetType {
-  id: number;
-  name: string;
-  amount: number;
-  type: "은행" | "카드" | "저축";
-  card?: number | null;
-}
+const assetTypeValues = ["은행", "카드", "저축"] as const;
+const formSchema = z.object({
+  name: z
+    .string()
+    .min(2, "자산명은 최소 2글자 이상이어야 합니다.")
+    .max(20, "자산명은 최대 20글자까지 가능합니다."),
+  amount: z.preprocess((val) => Number(val), z.number()),
+  type: z.enum(assetTypeValues),
+  card: z
+    .preprocess((val) => Number(val), z.number())
+    .nullable()
+    .optional(),
+});
 
 export default function AssetForm({
   isEditMode = false,
+  bankData,
   assetData,
 }: AssetFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -91,7 +77,7 @@ export default function AssetForm({
           name: assetData.name,
           amount: assetData.amount,
           type: assetData.type,
-          card: assetData.card || null,
+          card: assetData.card,
         }
       : {
           name: "",
@@ -101,12 +87,10 @@ export default function AssetForm({
         },
   });
 
-  // 자산추가 폼 열기/닫기 상태
+  // 자산추가 폼 열기/닫기
   const [isOpen, setIsOpen] = React.useState(false);
 
-  // 카드 자산 선택시, 은행 선택 옵션
-  const [bankAssets, setBankAssets] = React.useState<BankAssetType[]>([]);
-
+  // 자산 추가 핸들러
   const addAssetHandler = async (values: z.infer<typeof formSchema>) => {
     try {
       let cardId = null;
@@ -126,14 +110,12 @@ export default function AssetForm({
       }
 
       const data = {
-        id: Math.floor(Math.random() * (1000000 - 1 + 1)) + 1,
-        created_at: new Date(),
-        updated_at: new Date(),
-        type: values.type,
-        amount: values.amount,
         name: values.name,
+        amount: values.amount,
+        type: values.type,
         card: cardId,
       };
+
       const assetRes = await fetch("/api/assets", {
         method: "POST",
         body: JSON.stringify(data),
@@ -169,25 +151,6 @@ export default function AssetForm({
     }
   };
 
-  async function fetchBankAssets() {
-    const response = await fetch("/api/assets"); // 은행 데이터 가져오기
-    const data = await response.json();
-    return data.filter((item: BankAssetType) => item.type === "은행");
-  }
-
-  // 자산 타입이 카드일 때 은행 데이터 가져오기
-  React.useEffect(() => {
-    if (form.watch("type") === "카드") {
-      fetchBankAssets()
-        .then((banks) => {
-          setBankAssets(banks);
-        })
-        .catch(() => {});
-    } else {
-      setBankAssets([]);
-    }
-  }, [form.watch("type")]);
-
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
@@ -222,7 +185,7 @@ export default function AssetForm({
                     <FormLabel>자산타입</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}>
+                      defaultValue={field.value ? String(field.value) : ""}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="자산 타입을 선택해주세요." />
@@ -249,17 +212,15 @@ export default function AssetForm({
                       <FormLabel>연동계좌(은행)</FormLabel>
                       <Select
                         onValueChange={field.onChange}
-                        defaultValue={String(field.value)}>
+                        defaultValue={field.value ? String(field.value) : ""}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="은행을 선택해주세요" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {bankAssets?.map((bank) => (
-                            <SelectItem
-                              key={bank.id}
-                              value={bank.id.toString()}>
+                          {bankData?.map((bank) => (
+                            <SelectItem key={bank.id} value={String(bank.id)}>
                               {bank.name}
                             </SelectItem>
                           ))}
