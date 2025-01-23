@@ -1,53 +1,67 @@
 "use client";
 
 import { Separator } from "@/components/ui/separator";
-import React, { useMemo } from "react";
-import AssetType from "./AssetType";
-import AssetItem from "./AssetItem";
+import { Edit3, X } from "lucide-react";
+import React from "react";
 interface AssetListProps {
   icon: React.ReactNode;
   totalAmount: number;
-  type: "은행" | "카드" | "저축";
-  bankData?: {
-    id: number;
-    name: string;
-    amount: number;
-    type: "은행" | "카드" | "저축";
-    card: number | null;
-  }[];
+  typeName: string;
   assetData: {
-    id: number;
     name: string;
     amount: number;
-    type: "은행" | "카드" | "저축";
-    card: number | null;
-  }[];
-  cardData: {
-    id: number;
-    created_at: string;
-    name: JSON;
-    asset: number;
+    id: string;
   }[];
 }
 
 export default function AssetList({
   icon,
   totalAmount,
-  type,
-  bankData,
+  typeName,
   assetData,
-  cardData,
 }: AssetListProps) {
+  const deleteAssetHandler = async (id: number) => {
+    try {
+      await fetch("/api/assets", {
+        method: "DELETE",
+        body: JSON.stringify({ id }),
+      });
+    } catch (error) {
+      throw new Error();
+    }
+  };
+
   return (
     <div>
-      <div className="flex flex-col gap-2 mb-5">
-        <AssetType icon={icon} type={type} totalAmount={totalAmount} />
+      <div className='flex flex-col gap-2 mb-5'>
+        <div className='flex items-center justify-between'>
+          <h2 className='flex items-center gap-2 text-xl font-bold'>
+            {icon}
+            {typeName}
+          </h2>
+          <p
+            className={`${
+              totalAmount > 0 ? "text-black" : "text-red-600"
+            } font-semibold`}>
+            Total: {totalAmount.toLocaleString()} 원
+          </p>
+        </div>
         <Separator />
-        <AssetItem
-          assetData={assetData}
-          bankData={bankData}
-          cardData={cardData}
-        />
+        <ul className='flex flex-col gap-2'>
+          {assetData.map((asset) => (
+            <li className='flex items-center justify-between' key={asset.name}>
+              <span>{asset.name}</span>
+              <div className='flex '>
+                <span>{asset.amount.toLocaleString()} 원</span>
+                <Edit3 className='cursor-pointer' />
+                <X
+                  className='cursor-pointer'
+                  onClick={() => deleteAssetHandler(asset.id)}
+                />
+              </div>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

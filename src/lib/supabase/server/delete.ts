@@ -11,6 +11,5 @@ export const deleting = async <T extends ModelSchema>(model: T, id: number) => {
   }
 
   const { error } = await db.from(model).delete().eq("id", id);
-
   if (error) return error;
 };

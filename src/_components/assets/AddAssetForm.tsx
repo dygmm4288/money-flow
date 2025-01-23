@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -18,6 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -25,31 +27,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import * as React from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Edit3, Plus } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus } from "lucide-react";
+import * as React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-interface AssetFormProps {
-  isEditMode?: boolean;
-  bankData?: {
-    id: number;
-    name: string;
-    amount: number;
-    type: "은행" | "카드" | "저축";
-    card: number | null;
-  }[];
-  assetData?: {
-    id?: number | undefined;
-    name: string;
-    amount: number;
-    type: "은행" | "카드" | "저축";
-    card?: number | null;
-  };
-}
 
 const assetTypeValues = ["은행", "카드", "저축"] as const;
 const formSchema = z.object({
@@ -59,69 +41,41 @@ const formSchema = z.object({
     .max(20, "자산명은 최대 20글자까지 가능합니다."),
   amount: z.preprocess((val) => Number(val), z.number()),
   type: z.enum(assetTypeValues),
-  card: z
-    .preprocess((val) => Number(val), z.number())
-    .nullable()
-    .optional(),
 });
 
-export default function AssetForm({
-  isEditMode = false,
-  bankData,
-  assetData,
-}: AssetFormProps) {
+export default function AddAssetForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: assetData
-      ? {
-          name: assetData.name,
-          amount: assetData.amount,
-          type: assetData.type,
-          card: assetData.card,
-        }
-      : {
-          name: "",
-          amount: 0,
-          card: null,
-          type: undefined,
-        },
+    defaultValues: {
+      name: "",
+      amount: 0,
+      type: undefined,
+    },
   });
 
-  // 자산추가 폼 열기/닫기
+  // 자산추가 폼 열기/닫기 상태
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isEdit, setIsEdit] = React.useState(false);
 
-  // 자산 추가 핸들러
   const addAssetHandler = async (values: z.infer<typeof formSchema>) => {
     try {
-      let cardId = null;
-
-      if (values.type === "카드" && values.card) {
-        const cardRes = await fetch("/api/cards", {
-          method: "POST",
-          body: JSON.stringify({ name: values.name, asset: values.card }),
-        });
-        const cardData = await cardRes.json();
-
-        cardId = cardData.card.id;
-
-        if (!cardRes.ok) {
-          throw new Error("카드 데이터 생성 중 오류가 발생했습니다.");
-        }
-      }
-
+      const model = "assets";
       const data = {
-        name: values.name,
-        amount: values.amount,
+        id: Math.floor(Math.random() * (1000000 - 1 + 1)) + 1,
+        created_at: new Date(),
+        updated_at: new Date(),
         type: values.type,
-        card: cardId,
+        amount: values.amount,
+        name: values.name,
+        // card: 10,
+        // user: uuid
       };
 
-      const assetRes = await fetch("/api/assets", {
+      const res = await fetch("/api/assets", {
         method: "POST",
         body: JSON.stringify(data),
       });
       setIsOpen(false);
-      console.log(assetRes);
 
       form.reset();
     } catch (error) {
@@ -129,42 +83,13 @@ export default function AssetForm({
     }
   };
 
-  const editAssetHandler = async (id: number) => {
-    if (!assetData) return;
-
-    try {
-      const updateData = {
-        id,
-        name: form.getValues("name"),
-        amount: form.getValues("amount"),
-        type: form.getValues("type"),
-        card: form.getValues("card") || null,
-      };
-      const res = fetch(`/api/assets/`, {
-        method: "PUT",
-        body: JSON.stringify(updateData),
-      });
-
-      setIsOpen(false);
-    } catch (error) {
-      throw new Error();
-    }
-  };
-
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
-        {isEditMode ? (
-          <Edit3
-            className="cursor-pointer"
-            onClick={() => editAssetHandler(Number(assetData?.id))}
-          />
-        ) : (
-          <Button>
-            <Plus />
-            자산추가
-          </Button>
-        )}
+        <Button>
+          <Plus />
+          자산추가
+        </Button>
       </DrawerTrigger>
       <DrawerContent>
         <div className="mx-auto w-full max-w-sm py-10">
@@ -185,7 +110,7 @@ export default function AssetForm({
                     <FormLabel>자산타입</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value ? String(field.value) : ""}>
+                      defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="자산 타입을 선택해주세요." />
@@ -202,34 +127,6 @@ export default function AssetForm({
                   </FormItem>
                 )}
               />
-
-              {form.watch("type") === "카드" && (
-                <FormField
-                  control={form.control}
-                  name="card"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>연동계좌(은행)</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value ? String(field.value) : ""}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="은행을 선택해주세요" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {bankData?.map((bank) => (
-                            <SelectItem key={bank.id} value={String(bank.id)}>
-                              {bank.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  )}
-                />
-              )}
 
               <FormField
                 control={form.control}
@@ -272,15 +169,7 @@ export default function AssetForm({
                   </FormItem>
                 )}
               />
-              {isEditMode ? (
-                <Button
-                  type="button"
-                  onClick={() => editAssetHandler(Number(assetData?.id))}>
-                  수정
-                </Button>
-              ) : (
-                <Button type="submit">저장</Button>
-              )}
+              <Button type="submit">저장</Button>
             </form>
           </Form>
           <DrawerFooter>
