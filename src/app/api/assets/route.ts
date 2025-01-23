@@ -1,6 +1,7 @@
 import { deleting } from "@/lib/supabase/server/delete";
 import { get } from "@/lib/supabase/server/get";
 import { post } from "@/lib/supabase/server/post";
+import { put } from "@/lib/supabase/server/put";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (request: NextRequest) => {
@@ -44,4 +45,31 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "Not Exists Data" }, { status: 404 });
   }
   return NextResponse.json(null, { status: 200 });
+}
+
+export async function PUT(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const { id, ...updateFields } = body;
+
+    if (!id) {
+      return NextResponse.json(
+        { message: "ID가 필요합니다." },
+        { status: 400 }
+      );
+    }
+
+    const updatedData = await put("assets", id, updateFields);
+
+    return NextResponse.json(
+      { message: "자산이 성공적으로 수정되었습니다.", data: updatedData },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error updating asset:", error);
+    return NextResponse.json(
+      { message: "자산 수정 중 오류가 발생했습니다.", error },
+      { status: 500 }
+    );
+  }
 }

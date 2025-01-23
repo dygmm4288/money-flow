@@ -4,7 +4,7 @@ import { createClient } from "./server";
 export const put = async <T extends ModelSchema>(
   model: T,
   id: number,
-  params: UpdateSchema<T>,
+  params: UpdateSchema<T>
 ) => {
   const db = await createClient();
 

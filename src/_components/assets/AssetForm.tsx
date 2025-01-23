@@ -68,7 +68,7 @@ interface AssetFormProps {
     name: string;
     amount: number;
     type: "은행" | "카드" | "저축";
-    card?: number | undefined;
+    card?: number | null;
   };
 }
 
@@ -77,7 +77,7 @@ interface BankAssetType {
   name: string;
   amount: number;
   type: "은행" | "카드" | "저축";
-  card?: number | undefined;
+  card?: number | null;
 }
 
 export default function AssetForm({
@@ -90,13 +90,13 @@ export default function AssetForm({
       ? {
           name: assetData.name,
           amount: assetData.amount,
-          card: assetData.card,
           type: assetData.type,
+          card: assetData.card || null,
         }
       : {
           name: "",
           amount: 0,
-          card: undefined,
+          card: null,
           type: undefined,
         },
   });
@@ -147,9 +147,23 @@ export default function AssetForm({
     }
   };
 
-  const editAssetHandler = (id: number) => {
+  const editAssetHandler = async (id: number) => {
+    if (!assetData) return;
+
     try {
-      const newData = {};
+      const updateData = {
+        id,
+        name: form.getValues("name"),
+        amount: form.getValues("amount"),
+        type: form.getValues("type"),
+        card: form.getValues("card") || null,
+      };
+      const res = fetch(`/api/assets/`, {
+        method: "PUT",
+        body: JSON.stringify(updateData),
+      });
+
+      setIsOpen(false);
     } catch (error) {
       throw new Error();
     }
@@ -169,6 +183,8 @@ export default function AssetForm({
           setBankAssets(banks);
         })
         .catch(() => {});
+    } else {
+      setBankAssets([]);
     }
   }, [form.watch("type")]);
 
@@ -296,7 +312,11 @@ export default function AssetForm({
                 )}
               />
               {isEditMode ? (
-                <Button type="button">수정</Button>
+                <Button
+                  type="button"
+                  onClick={() => editAssetHandler(Number(assetData?.id))}>
+                  수정
+                </Button>
               ) : (
                 <Button type="submit">저장</Button>
               )}

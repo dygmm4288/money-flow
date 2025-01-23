@@ -10,23 +10,27 @@ export interface AssetType {
   type: "은행" | "카드" | "저축";
   amount: number;
   name: string;
-  card: string | null;
+  card: number | null; // 카드 테이블의 id
 }
 
-const assetTypes = [
+const assetTypes: {
+  icon: React.ReactNode;
+  typeId: string;
+  type: "은행" | "카드" | "저축";
+}[] = [
   {
-    type: "banks",
-    typeName: "은행",
+    typeId: "banks",
+    type: "은행",
     icon: <Banknote />,
   },
   {
-    type: "cards",
-    typeName: "카드",
+    typeId: "cards",
+    type: "카드",
     icon: <CreditCard />,
   },
   {
-    type: "savings",
-    typeName: "저축",
+    typeId: "savings",
+    type: "저축",
     icon: <PiggyBankIcon />,
   },
 ];
@@ -38,26 +42,27 @@ export default function AssetClient({ assetData }: { assetData: AssetType[] }) {
     savings: assetData?.filter((item: AssetType) => item.type === "저축") || [],
   };
 
-  const calculateTotal = (items: AssetType[]) =>
+  const calculateTotalAmount = (items: AssetType[]) =>
     items.reduce((total, item) => total + item.amount, 0);
 
   return (
     <div className="flex flex-col gap-10 mr-1">
       {assetTypes.map((asset) => (
         <AssetList
-          key={asset.type}
+          key={asset.typeId}
           icon={asset.icon}
-          typeName={asset.typeName}
-          totalAmount={calculateTotal(
-            filterByAssetTypes[asset.type as keyof typeof filterByAssetTypes]
+          type={asset.type}
+          totalAmount={calculateTotalAmount(
+            filterByAssetTypes[asset.typeId as keyof typeof filterByAssetTypes]
           )}
           assetData={filterByAssetTypes[
-            asset.type as keyof typeof filterByAssetTypes
+            asset.typeId as keyof typeof filterByAssetTypes
           ].map((item) => ({
-            name: item.name,
-            amount: item.amount,
             id: item.id,
             type: item.type,
+            name: item.name,
+            amount: item.amount,
+            card: item.card || null,
           }))}
         />
       ))}
