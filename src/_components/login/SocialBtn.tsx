@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 type Props = {
-  type: "kakao" | "google";
+  type: "kakao" | "google" | "github";
   nextPath?: string;
 };
 
@@ -24,6 +24,14 @@ const SOCIAL_BTN = {
     width: 12,
     height: 12,
     text: "구글로 로그인하기",
+    bgClass: "bg-white",
+  },
+  github: {
+    src: "/assets/auth/github.svg",
+    alt: "github login logo",
+    width: 12,
+    height: 12,
+    text: "깃허브로 로그인하기",
     bgClass: "bg-white",
   },
 };

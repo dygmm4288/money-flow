@@ -43,7 +43,7 @@ export default async function SignIn({ nextPath }: { nextPath?: string }) {
           </div>
           <div className='flex flex-col gap-5 my-6 space-y-1.5'>
             <SocialBtn type='google' nextPath={nextPath} />
-            <SocialBtn type='kakao' nextPath={nextPath} />
+            <SocialBtn type='github' nextPath={nextPath} />
           </div>
         </div>
       </CardContent>
